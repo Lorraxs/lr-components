@@ -26,3 +26,5 @@ export { default as useQueue } from './hooks/useQueue';
 export { default as useReponsiveProps } from './hooks/useReponsiveProps';
 export { default as useWindowSize } from './hooks/useWindowSize';
 export { default as useShow } from './hooks/useShow';
+export { default as useConfirmDialog } from './hooks/useConfirmDialog';
+export { default as useInputDialog } from './hooks/useInputDialog';
