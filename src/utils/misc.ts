@@ -6,3 +6,6 @@ export const isEnvBrowser = (): boolean => !(window as any).invokeNative;
 export const noop = () => {};
 
 export const radToDeg = (rad: number): number => rad * (180 / Math.PI);
+
+export const Sleep = (ms: number): Promise<void> =>
+  new Promise(resolve => setTimeout(resolve, ms));

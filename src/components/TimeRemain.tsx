@@ -7,23 +7,34 @@ export type TimeRemainProps = {
   maxTime: number;
   elapsedTime: number;
   doneLabel?: string;
+  fontSize?: number;
+  fontWeight?: number;
+  fontFamily?: string;
 } & BoxProps;
 
 const TimeRemain = React.forwardRef<HTMLDivElement, TimeRemainProps>(
   (props, _ref) => {
-    const { maxTime, elapsedTime, doneLabel, ...rest } = props;
+    const {
+      maxTime,
+      elapsedTime,
+      doneLabel,
+      fontSize = 18,
+      fontWeight = 900,
+      fontFamily = 'Goldman',
+      ...rest
+    } = props;
 
     return (
       <Text
-        fontFamily="Work Sans"
+        fontFamily={fontFamily}
         textTransform="uppercase"
-        fontWeight={900}
-        rFontSize={25}
+        fontWeight={fontWeight}
+        rFontSize={fontSize}
         {...rest}
       >
         {elapsedTime >= maxTime
           ? doneLabel || 'Done'
-          : moment(maxTime - elapsedTime, 's').format('H:mm:ss')}
+          : moment.utc((maxTime - elapsedTime) * 1000).format('H:mm:ss')}
       </Text>
     );
   }

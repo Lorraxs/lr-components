@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState } from 'react';
 
-import { useEventListener, useIsomorphicLayoutEffect } from "usehooks-ts";
+import { useEventListener, useIsomorphicLayoutEffect } from 'usehooks-ts';
 
 function useWindowSize() {
   const [windowSize, setWindowSize] = useState({
@@ -19,7 +19,7 @@ function useWindowSize() {
     });
   };
 
-  useEventListener("resize", handleSize);
+  useEventListener('resize', handleSize);
 
   // Set size at the first client-side load
   useIsomorphicLayoutEffect(() => {

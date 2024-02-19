@@ -26,6 +26,8 @@ const Text = React.forwardRef<any, TextProps>((props, ref) => {
     variant,
     shadow,
     position,
+    textShadow,
+    fontFamily,
     ...rest
   } = props;
   const ratioStyle = useReponsiveProps(props);
@@ -53,12 +55,11 @@ const Text = React.forwardRef<any, TextProps>((props, ref) => {
     <Element
       className={className}
       style={{
-        fontFamily: 'Roboto',
+        fontFamily: fontFamily,
         ...rest,
         ...ratioStyle,
         position: position || 'relative',
-        textShadow:
-          '1px 3px 2px rgba(0,0,0,0.3), 0px -2px 10px rgba(255,255,255,0.3), 1px 0px 0px var(---primary-color)',
+        textShadow: textShadow,
       }}
       onClick={onClick}
       onBlur={onBlur}
@@ -67,7 +68,7 @@ const Text = React.forwardRef<any, TextProps>((props, ref) => {
       {shadow && (
         <Element
           style={{
-            fontFamily: 'Roboto',
+            fontFamily: fontFamily,
             ...rest,
             ...ratioStyle,
             position: 'absolute',

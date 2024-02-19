@@ -4,7 +4,8 @@ export type MenuItem = {
   name: string;
   label: string;
   icon?: React.ReactNode;
-  element?: React.ReactNode;
+  args?: Record<string, any>;
+  element?: (...args: any[]) => JSX.Element;
 };
 
 const useMenu = (items: MenuItem[]) => {

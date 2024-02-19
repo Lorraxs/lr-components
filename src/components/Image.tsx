@@ -8,7 +8,6 @@ export type ImageProps = {
 } & BoxProps;
 
 const StyledImg = styled.img`
-  object-fit: contain;
   width: 100%;
   height: 100%;
   object-position: center;
@@ -20,7 +19,7 @@ const StyledImg = styled.img`
 `;
 
 const Image = React.forwardRef<HTMLImageElement, ImageProps>((props, ref) => {
-  const { src, alt, ...rest } = props;
+  const { src, alt, objectFit, ...rest } = props;
 
   return (
     <Box {...rest}>
@@ -31,6 +30,9 @@ const Image = React.forwardRef<HTMLImageElement, ImageProps>((props, ref) => {
         onError={({ currentTarget }) => {
           currentTarget.onerror = null; // prevents looping
           currentTarget.src = './images/no-picture.png';
+        }}
+        style={{
+          objectFit: objectFit || 'contain',
         }}
       />
     </Box>

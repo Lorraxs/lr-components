@@ -10,7 +10,8 @@ export type BoxProps = {
   onMouseEnter?: React.MouseEventHandler<HTMLDivElement>;
   onMouseLeave?: React.MouseEventHandler<HTMLDivElement>;
   onMouseOver?: React.MouseEventHandler<HTMLDivElement>;
-} & CSS.Properties &
+  onContextMenu?: React.MouseEventHandler<HTMLDivElement>;
+} & Omit<CSS.Properties, 'transition'> &
   WithRatioProps;
 
 const Box = React.forwardRef<HTMLDivElement, BoxProps>((props, ref) => {
@@ -22,6 +23,7 @@ const Box = React.forwardRef<HTMLDivElement, BoxProps>((props, ref) => {
     onMouseEnter,
     onMouseLeave,
     onMouseOver,
+    onContextMenu,
     ...rest
   } = props;
   const ratioStyle = useReponsiveProps(props);
@@ -36,6 +38,7 @@ const Box = React.forwardRef<HTMLDivElement, BoxProps>((props, ref) => {
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       onMouseOver={onMouseOver}
+      onContextMenu={onContextMenu}
     >
       {children}
     </div>

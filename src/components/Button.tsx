@@ -21,7 +21,7 @@ export type ButtonProps = {
 } & CSS.Properties &
   WithRatioProps;
 
-const StyledButton = styled.button<{ justifyContent: string }>`
+const StyledButton = styled.button`
   width: 200px;
   height: 50px;
   padding: 0 20px;
@@ -30,7 +30,6 @@ const StyledButton = styled.button<{ justifyContent: string }>`
   cursor: pointer;
   color: black;
   display: flex;
-  justify-content: ${p => p.justifyContent};
   align-items: center;
   transition: all 0.3s ease;
   &:hover {
@@ -58,14 +57,17 @@ function Button(props: ButtonProps) {
   return (
     <StyledButton
       className={className}
-      style={{ ...ratioStyle, ...rest }}
+      style={{
+        ...ratioStyle,
+        ...rest,
+        justifyContent: icon && label ? 'space-between' : 'center',
+      }}
       onClick={onClick}
       onBlur={onBlur}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       onMouseOver={onMouseOver}
       type={type}
-      justifyContent={icon && label ? 'space-between' : 'center'}
     >
       {icon}
       {label && <Text color={color}>{label}</Text>}

@@ -22,6 +22,7 @@ export type WithRatioProps = {
   rGridTemplateColumns?: [number, number];
   rGridTemplateRows?: [number, number];
   rGridAutoRows?: number;
+  rBoderSpacing?: number;
 };
 
 const useReponsiveProps = (props: WithRatioProps): CSS.Properties => {
@@ -119,6 +120,9 @@ const useReponsiveProps = (props: WithRatioProps): CSS.Properties => {
   }
   if (props.rGridAutoRows !== undefined) {
     returnProps.gridAutoRows = props.rGridAutoRows * ratioWidth + 'px';
+  }
+  if (props.rBoderSpacing !== undefined) {
+    returnProps.borderSpacing = props.rBoderSpacing * ratioWidth + 'px';
   }
 
   return returnProps;
