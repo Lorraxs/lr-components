@@ -29,6 +29,16 @@ function useConfirmDialog(props: Props) {
     return data;
   }, [ref, setShow]);
 
+  const accept = useCallback(() => {
+    setShow(false);
+    ref.current = true;
+  }, [ref, setShow]);
+
+  const cancel = useCallback(() => {
+    setShow(false);
+    ref.current = false;
+  }, [ref, setShow]);
+
   return {
     confirm,
     title,
@@ -75,22 +85,10 @@ function useConfirmDialog(props: Props) {
               rMargin={[10, 0, 0, 0]}
               rGap={10}
             >
-              <Button
-                color="success"
-                onClick={() => {
-                  setShow(false);
-                  ref.current = true;
-                }}
-              >
+              <Button color="success" onClick={accept}>
                 Xác nhận
               </Button>
-              <Button
-                color="danger"
-                onClick={() => {
-                  setShow(false);
-                  ref.current = false;
-                }}
-              >
+              <Button color="danger" onClick={cancel}>
                 Hủy
               </Button>
             </Box>

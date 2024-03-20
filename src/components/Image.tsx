@@ -4,6 +4,7 @@ import Box, { BoxProps } from './Box';
 
 export type ImageProps = {
   src: string;
+  fallbackSrc?: string;
   alt?: string;
 } & BoxProps;
 
@@ -19,7 +20,13 @@ const StyledImg = styled.img`
 `;
 
 const Image = React.forwardRef<HTMLImageElement, ImageProps>((props, ref) => {
-  const { src, alt, objectFit, ...rest } = props;
+  const {
+    src,
+    alt,
+    objectFit,
+    fallbackSrc = './assets/no-picture.png',
+    ...rest
+  } = props;
 
   return (
     <Box {...rest}>
@@ -29,7 +36,7 @@ const Image = React.forwardRef<HTMLImageElement, ImageProps>((props, ref) => {
         alt={alt || src}
         onError={({ currentTarget }) => {
           currentTarget.onerror = null; // prevents looping
-          currentTarget.src = './images/no-picture.png';
+          currentTarget.src = fallbackSrc;
         }}
         style={{
           objectFit: objectFit || 'contain',
