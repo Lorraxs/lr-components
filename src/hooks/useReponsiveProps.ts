@@ -3,7 +3,9 @@ import useWindowSize from './useWindowSize';
 
 export type WithRatioProps = {
   rWidth?: number;
+  rMinWidth?: number;
   rHeight?: number;
+  rMinHeight?: number;
   rTop?: number;
   rLeft?: number;
   rRight?: number;
@@ -32,8 +34,14 @@ const useReponsiveProps = (props: WithRatioProps): CSS.Properties => {
   if (props.rWidth !== undefined) {
     returnProps.width = props.rWidth * ratioWidth + 'px';
   }
+  if (props.rMinWidth !== undefined) {
+    returnProps.minWidth = props.rMinWidth * ratioWidth + 'px';
+  }
   if (props.rHeight !== undefined) {
     returnProps.height = props.rHeight * ratioWidth + 'px';
+  }
+  if (props.rMinHeight !== undefined) {
+    returnProps.minHeight = props.rMinHeight * ratioWidth + 'px';
   }
   if (props.rTop !== undefined) {
     returnProps.top = props.rTop * ratioWidth + 'px';
