@@ -20,10 +20,10 @@ export type UsePages = {
 
 const usePages = (pages: PageItem[], isShowing: boolean) => {
   const [activePageIndex, setActivePageIndex] = useState<number>(0);
-  const activePage = useMemo(
-    () => pages[activePageIndex],
-    [activePageIndex, pages]
-  );
+  const activePage = useMemo(() => pages[activePageIndex], [
+    activePageIndex,
+    pages,
+  ]);
   const switchPage = useCallback(
     (pageIdx: number) => {
       const page = pages[pageIdx];

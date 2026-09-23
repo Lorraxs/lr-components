@@ -25,11 +25,12 @@ export async function fetchNui<T = any>(
     body: JSON.stringify(data),
   };
 
-  if (isEnvBrowser() && mockData) return mockData;
+  if (isEnvBrowser() && mockData !== undefined) return mockData;
 
-  const resourceName = (window as any).GetParentResourceName
-    ? (window as any).GetParentResourceName()
-    : 'lr_appearance';
+  const resourceName =
+    typeof window !== 'undefined' && (window as any).GetParentResourceName
+      ? (window as any).GetParentResourceName()
+      : 'lr_appearance';
 
   const resp = await fetch(`https://${resourceName}/${eventName}`, options);
 

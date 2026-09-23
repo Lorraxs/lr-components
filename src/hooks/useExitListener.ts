@@ -15,6 +15,9 @@ const useExitListener = (visibleSetter: FrameVisibleSetter) => {
   }, [visibleSetter]);
 
   useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
     const keyHandler = (e: KeyboardEvent) => {
       if (LISTENED_KEYS.includes(e.code)) {
         setterRef.current(false);

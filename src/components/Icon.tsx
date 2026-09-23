@@ -1,6 +1,7 @@
 import React from 'react';
 import Box, { BoxProps } from './Box';
 import useReponsiveProps from '../hooks/useReponsiveProps';
+import { omitResponsiveProps } from '../utils/props';
 export type IconProps = {
   icon: React.ReactNode | string;
 } & BoxProps;
@@ -8,33 +9,51 @@ export type IconProps = {
 function Icon(props: IconProps) {
   const {
     children,
+    className,
     onClick,
     onBlur,
     onMouseEnter,
     onMouseLeave,
     onMouseOver,
     onContextMenu,
+    onWheel,
     icon,
+    style,
+    hover = {},
     ...rest
   } = props;
   const ratioStyle = useReponsiveProps(props);
+  const restStyle = omitResponsiveProps(rest);
+  const [isHover, setIsHover] = React.useState(false);
   if (typeof icon === 'string') {
+    const combinedClassName = className
+      ? `${className} icon-${icon}`
+      : `icon-${icon}`;
     return (
       <i
-        className={`icon-${icon}`}
+        className={combinedClassName}
         style={{
+          ...style,
           ...ratioStyle,
-          ...rest,
+          ...restStyle,
+          ...(isHover ? hover : {}),
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
         }}
         onClick={onClick}
         onBlur={onBlur}
-        onMouseEnter={onMouseEnter}
-        onMouseLeave={onMouseLeave}
+        onMouseEnter={e => {
+          setIsHover(true);
+          if (onMouseEnter) onMouseEnter(e);
+        }}
+        onMouseLeave={e => {
+          setIsHover(false);
+          if (onMouseLeave) onMouseLeave(e);
+        }}
         onMouseOver={onMouseOver}
         onContextMenu={onContextMenu}
+        onWheel={onWheel}
       >
         {children}
       </i>
@@ -43,15 +62,19 @@ function Icon(props: IconProps) {
   return (
     <Box
       {...rest}
+      className={className}
       display="flex"
       justifyContent="center"
-      alignItems="center "
+      alignItems="center"
       onClick={onClick}
       onBlur={onBlur}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       onMouseOver={onMouseOver}
       onContextMenu={onContextMenu}
+      onWheel={onWheel}
+      style={style}
+      hover={hover}
     >
       {icon}
     </Box>

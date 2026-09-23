@@ -1,6 +1,7 @@
 import React from 'react';
 import { BoxProps } from './Box';
 import useReponsiveProps from '../hooks/useReponsiveProps';
+import { omitResponsiveProps } from '../utils/props';
 
 const Tbody = React.forwardRef<HTMLTableSectionElement, BoxProps>(
   (props, ref) => {
@@ -13,13 +14,16 @@ const Tbody = React.forwardRef<HTMLTableSectionElement, BoxProps>(
       onMouseLeave,
       onMouseOver,
       onContextMenu,
+      onWheel,
+      style,
       ...rest
     } = props;
     const ratioStyle = useReponsiveProps(props);
+    const restStyle = omitResponsiveProps(rest);
     return (
       <tbody
         className={className}
-        style={{ ...ratioStyle, ...rest }}
+        style={{ ...style, ...ratioStyle, ...restStyle }}
         onClick={onClick}
         onBlur={onBlur}
         ref={ref}
@@ -27,6 +31,7 @@ const Tbody = React.forwardRef<HTMLTableSectionElement, BoxProps>(
         onMouseLeave={onMouseLeave}
         onMouseOver={onMouseOver}
         onContextMenu={onContextMenu}
+        onWheel={onWheel}
       >
         {children}
       </tbody>

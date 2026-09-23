@@ -1,17 +1,20 @@
-import React from 'react';
-import * as CSS from 'csstype';
+import React, { CSSProperties } from 'react';
 import useReponsiveProps, { WithRatioProps } from '../hooks/useReponsiveProps';
+import { omitResponsiveProps } from '../utils/props';
 
 export type BoxProps = {
   children?: React.ReactNode;
   className?: string;
-  onClick?: React.MouseEventHandler<HTMLDivElement>;
-  onBlur?: React.FocusEventHandler<HTMLDivElement>;
-  onMouseEnter?: React.MouseEventHandler<HTMLDivElement>;
-  onMouseLeave?: React.MouseEventHandler<HTMLDivElement>;
-  onMouseOver?: React.MouseEventHandler<HTMLDivElement>;
-  onContextMenu?: React.MouseEventHandler<HTMLDivElement>;
-} & Omit<CSS.Properties, 'transition'> &
+  onClick?: React.MouseEventHandler<HTMLElement>;
+  onBlur?: React.FocusEventHandler<HTMLElement>;
+  onMouseEnter?: React.MouseEventHandler<HTMLElement>;
+  onMouseLeave?: React.MouseEventHandler<HTMLElement>;
+  onMouseOver?: React.MouseEventHandler<HTMLElement>;
+  onContextMenu?: React.MouseEventHandler<HTMLElement>;
+  onWheel?: React.WheelEventHandler<HTMLElement>;
+  style?: CSSProperties;
+  hover?: CSSProperties;
+} & Partial<Omit<CSSProperties, 'transition'>> &
   WithRatioProps;
 
 const Box = React.forwardRef<HTMLDivElement, BoxProps>((props, ref) => {
@@ -24,21 +27,36 @@ const Box = React.forwardRef<HTMLDivElement, BoxProps>((props, ref) => {
     onMouseLeave,
     onMouseOver,
     onContextMenu,
+    onWheel,
+    style,
+    hover = {},
     ...rest
   } = props;
   const ratioStyle = useReponsiveProps(props);
-
+  const restStyle = omitResponsiveProps(rest);
+  const [isHover, setIsHover] = React.useState(false);
   return (
     <div
       className={className}
-      style={{ ...ratioStyle, ...rest }}
+      style={
+        isHover
+          ? { ...style, ...ratioStyle, ...restStyle, ...hover }
+          : { ...style, ...ratioStyle, ...restStyle }
+      }
       onClick={onClick}
       onBlur={onBlur}
       ref={ref}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
+      onMouseEnter={(...args) => {
+        setIsHover(true);
+        if (onMouseEnter) onMouseEnter(...args);
+      }}
+      onMouseLeave={(...args) => {
+        setIsHover(false);
+        if (onMouseLeave) onMouseLeave(...args);
+      }}
       onMouseOver={onMouseOver}
       onContextMenu={onContextMenu}
+      onWheel={onWheel}
     >
       {children}
     </div>

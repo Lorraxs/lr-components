@@ -1,11 +1,13 @@
-import * as CSS from 'csstype';
+import { Properties } from 'csstype';
 import useWindowSize from './useWindowSize';
 
 export type WithRatioProps = {
   rWidth?: number;
   rMinWidth?: number;
+  rMaxWidth?: number;
   rHeight?: number;
   rMinHeight?: number;
+  rMaxHeight?: number;
   rTop?: number;
   rLeft?: number;
   rRight?: number;
@@ -24,12 +26,13 @@ export type WithRatioProps = {
   rGridTemplateColumns?: [number, number];
   rGridTemplateRows?: [number, number];
   rGridAutoRows?: number;
+  rBorderSpacing?: number;
   rBoderSpacing?: number;
 };
 
-const useReponsiveProps = (props: WithRatioProps): CSS.Properties => {
+const useReponsiveProps = (props: WithRatioProps): Properties => {
   const { ratioWidth } = useWindowSize();
-  const returnProps: CSS.Properties = {};
+  const returnProps: Properties = {};
 
   if (props.rWidth !== undefined) {
     returnProps.width = props.rWidth * ratioWidth + 'px';
@@ -37,11 +40,17 @@ const useReponsiveProps = (props: WithRatioProps): CSS.Properties => {
   if (props.rMinWidth !== undefined) {
     returnProps.minWidth = props.rMinWidth * ratioWidth + 'px';
   }
+  if (props.rMaxWidth !== undefined) {
+    returnProps.maxWidth = props.rMaxWidth * ratioWidth + 'px';
+  }
   if (props.rHeight !== undefined) {
     returnProps.height = props.rHeight * ratioWidth + 'px';
   }
   if (props.rMinHeight !== undefined) {
     returnProps.minHeight = props.rMinHeight * ratioWidth + 'px';
+  }
+  if (props.rMaxHeight !== undefined) {
+    returnProps.maxHeight = props.rMaxHeight * ratioWidth + 'px';
   }
   if (props.rTop !== undefined) {
     returnProps.top = props.rTop * ratioWidth + 'px';
@@ -64,7 +73,7 @@ const useReponsiveProps = (props: WithRatioProps): CSS.Properties => {
         .join(' ');
     }
   }
-  if (props.rPadding) {
+  if (props.rPadding !== undefined) {
     if (typeof props.rPadding === 'number') {
       returnProps.padding = props.rPadding * ratioWidth + 'px';
     } else {
@@ -73,7 +82,7 @@ const useReponsiveProps = (props: WithRatioProps): CSS.Properties => {
         .join(' ');
     }
   }
-  if (props.rBorder) {
+  if (props.rBorder !== undefined) {
     if (typeof props.rBorder === 'number') {
       returnProps.border = props.rBorder * ratioWidth + 'px';
     } else {
@@ -128,6 +137,9 @@ const useReponsiveProps = (props: WithRatioProps): CSS.Properties => {
   }
   if (props.rGridAutoRows !== undefined) {
     returnProps.gridAutoRows = props.rGridAutoRows * ratioWidth + 'px';
+  }
+  if (props.rBorderSpacing !== undefined) {
+    returnProps.borderSpacing = props.rBorderSpacing * ratioWidth + 'px';
   }
   if (props.rBoderSpacing !== undefined) {
     returnProps.borderSpacing = props.rBoderSpacing * ratioWidth + 'px';

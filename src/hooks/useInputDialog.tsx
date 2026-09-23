@@ -1,32 +1,36 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useCallback, useRef, useState } from 'react';
-import { Button, Card, Input, Select, SelectItem } from '@nextui-org/react';
-import { Sleep } from '../utils/misc';
+import { createPortal } from 'react-dom';
 import Box from '../components/Box';
+import Button from '../components/Button';
+import Input from '../components/Input';
 import Text from '../components/Text';
+import { Sleep } from '../utils/misc';
 
 interface IField {
   name: string;
   label: string;
   type: 'text' | 'password' | 'select';
-  options?: { [key: string]: any } & { value: string; label: string }[];
+  options?: ({ value: string; label: string } & Record<string, unknown>)[];
 }
 
-function useInputDialog<T = any>(props: { field: IField[]; title: string }) {
+function useInputDialog<T = Record<string, unknown>>(props: {
+  field: IField[];
+  title: string;
+}) {
   const [fields, setFields] = useState<IField[]>(props.field);
   const [title, setTitle] = useState(props.title);
   const [show, setShow] = useState(false);
   const ref = useRef<{
     submitted: boolean;
     canceled: boolean;
-    formData: { [key: string]: any };
+    formData: Record<string, unknown>;
   }>({
     submitted: false,
     canceled: false,
     formData: {},
   });
   const formRef = useRef<HTMLFormElement>(null);
-  const [fieldData, setFieldData] = useState<{ [key: string]: any }>({});
+  const [fieldData, setFieldData] = useState<Record<string, unknown>>({});
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -40,7 +44,6 @@ function useInputDialog<T = any>(props: { field: IField[]; title: string }) {
     while (!ref.current.submitted && !ref.current.canceled) {
       await Sleep(100);
     }
-    console.log(ref.current);
     if (ref.current.canceled) {
       ref.current.canceled = false;
       ref.current.submitted = false;
@@ -51,114 +54,134 @@ function useInputDialog<T = any>(props: { field: IField[]; title: string }) {
     return ref.current.formData as T;
   }, []);
 
-  const setField = useCallback(
-    (name: string, value: any) => {
-      setFieldData({ ...fieldData, [name]: value });
-      ref.current.formData[name] = value;
-    },
-    [fieldData, setFieldData]
-  );
+  const setField = useCallback((name: string, value: unknown) => {
+    setFieldData(current => ({ ...current, [name]: value }));
+    ref.current.formData = { ...ref.current.formData, [name]: value };
+  }, []);
 
   const resetFields = useCallback(() => {
     setFieldData({});
     ref.current.formData = {};
-  }, [setFieldData]);
+  }, []);
+
+  const cancel = useCallback(() => {
+    setShow(false);
+    ref.current.canceled = true;
+  }, []);
 
   return {
-    dialogElement: show && (
-      <Box
-        width={'100%'}
-        height={'100%'}
-        backgroundColor="#1f1f1fb7"
-        position="absolute"
-        left={0}
-        top={0}
-        zIndex={999}
-        display="flex"
-        flexDirection="column"
-        justifyContent="center"
-        alignItems="center"
-      >
-        <Card className="p-5">
-          <form onSubmit={onSubmit} ref={formRef}>
-            <Box display="flex" flexDirection="column" rWidth={400}>
-              <Text
-                textTransform="uppercase"
-                fontWeight={900}
-                rLineHeight={25}
-                rFontSize={25}
-                rMargin={[0, 0, 10, 0]}
-              >
-                {title}
-              </Text>
-              {fields.map(item => {
-                switch (item.type) {
-                  case 'select':
-                    return item.options ? (
-                      <Select
-                        name={item.name}
-                        key={item.name}
-                        className="max-w-xs dark"
-                      >
-                        {item.options.map(option => (
-                          <SelectItem
-                            key={option.value}
-                            value={option.value}
-                            className="dark text-black"
-                          >
-                            {option.label}
-                          </SelectItem>
-                        ))}
-                      </Select>
-                    ) : null;
-                  default:
-                    return (
-                      <Input
-                        type={item.type}
-                        label={item.label}
-                        name={item.name}
-                        key={item.name}
-                        className="mt-2"
-                        value={fieldData[item.name]}
-                        onChange={e => {
-                          setFieldData({
-                            ...fieldData,
-                            [item.name]: e.target.value,
-                          });
-                          ref.current.formData[item.name] = e.target.value;
-                        }}
-                      />
-                    );
-                }
-              })}
-              <Box
-                rMargin={[10, 0, 0, 0]}
-                display="flex"
-                rGap={10}
-                className="mt-5"
-              >
-                <Button color="success" type="submit">
-                  Xác nhận
-                </Button>
-                <Button
-                  color="danger"
-                  onClick={() => {
-                    setShow(false);
-                    ref.current.canceled = true;
-                  }}
+    dialogElement:
+      show &&
+      createPortal(
+        <Box
+          width={'100%'}
+          height={'100%'}
+          backgroundColor="#1f1f1fb7"
+          position="absolute"
+          left={0}
+          top={0}
+          zIndex={999}
+          display="flex"
+          flexDirection="column"
+          justifyContent="center"
+          alignItems="center"
+        >
+          <Box
+            rPadding={20}
+            backgroundColor="#18181b"
+            borderRadius={8}
+            boxShadow="0 20px 45px rgba(0, 0, 0, 0.35)"
+          >
+            <form onSubmit={onSubmit} ref={formRef}>
+              <Box display="flex" flexDirection="column" rWidth={400} rGap={10}>
+                <Text
+                  textTransform="uppercase"
+                  fontWeight={900}
+                  rLineHeight={25}
+                  rFontSize={25}
+                  rMargin={[0, 0, 10, 0]}
                 >
-                  Hủy
-                </Button>
+                  {title}
+                </Text>
+                {fields.map(item => {
+                  switch (item.type) {
+                    case 'select':
+                      return item.options ? (
+                        <select
+                          key={item.name}
+                          name={item.name}
+                          value={String(fieldData[item.name] ?? '')}
+                          onChange={e => setField(item.name, e.target.value)}
+                          style={{
+                            width: '100%',
+                            height: 42,
+                            padding: '0 10px',
+                            borderRadius: 10,
+                            border: 'none',
+                            backgroundColor: '#ffffff11',
+                            color: '#ffffff',
+                            outline: 'none',
+                          }}
+                        >
+                          <option value="" disabled>
+                            {item.label}
+                          </option>
+                          {item.options.map(option => (
+                            <option
+                              key={option.value}
+                              value={option.value}
+                              style={{ color: '#111827' }}
+                            >
+                              {option.label}
+                            </option>
+                          ))}
+                        </select>
+                      ) : null;
+                    default:
+                      return (
+                        <Input
+                          type={item.type}
+                          placeholder={item.label}
+                          key={item.name}
+                          value={String(fieldData[item.name] ?? '')}
+                          onChange={e => setField(item.name, e.target.value)}
+                          width="100%"
+                          rHeight={42}
+                        />
+                      );
+                  }
+                })}
+                <Box rMargin={[10, 0, 0, 0]} display="flex" rGap={10}>
+                  <Button
+                    label="Xác nhận"
+                    color="#111827"
+                    backgroundColor="#84cc16"
+                    fontWeight={700}
+                    rWidth={120}
+                    rHeight={40}
+                    type="submit"
+                  />
+                  <Button
+                    label="Hủy"
+                    color="#ffffff"
+                    backgroundColor="#dc2626"
+                    fontWeight={700}
+                    rWidth={80}
+                    rHeight={40}
+                    onClick={cancel}
+                    type="button"
+                  />
+                </Box>
               </Box>
-            </Box>
-          </form>
-        </Card>
-      </Box>
-    ),
+            </form>
+          </Box>
+        </Box>,
+        document.body
+      ),
     getInputData,
     setFields,
     setTitle,
-    setField: setField,
+    setField,
     resetFields,
   };
 }

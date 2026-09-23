@@ -1,12 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
-import Box, { BoxProps } from './Box';
+import useReponsiveProps, { WithRatioProps } from '../hooks/useReponsiveProps';
+import { omitResponsiveProps } from '../utils/props';
 
 export type ImageProps = {
-  src: string;
   fallbackSrc?: string;
-  alt?: string;
-} & BoxProps;
+} & WithRatioProps &
+  React.ImgHTMLAttributes<HTMLImageElement>;
 
 const StyledImg = styled.img`
   width: 100%;
@@ -21,28 +21,29 @@ const StyledImg = styled.img`
 
 const Image = React.forwardRef<HTMLImageElement, ImageProps>((props, ref) => {
   const {
-    src,
-    alt,
-    objectFit,
+    style,
     fallbackSrc = './assets/no-picture.png',
+    onError,
     ...rest
   } = props;
+  const ratioStyle = useReponsiveProps(props);
+  const restProps = omitResponsiveProps(rest);
 
   return (
-    <Box {...rest}>
-      <StyledImg
-        src={src}
-        ref={ref}
-        alt={alt || src}
-        onError={({ currentTarget }) => {
-          currentTarget.onerror = null; // prevents looping
-          currentTarget.src = fallbackSrc;
-        }}
-        style={{
-          objectFit: objectFit || 'contain',
-        }}
-      />
-    </Box>
+    <StyledImg
+      ref={ref}
+      onError={event => {
+        onError?.(event);
+        const { currentTarget } = event;
+        currentTarget.onerror = null; // prevents looping
+        currentTarget.src = fallbackSrc;
+      }}
+      style={{
+        ...style,
+        ...ratioStyle,
+      }}
+      {...restProps}
+    />
   );
 });
 

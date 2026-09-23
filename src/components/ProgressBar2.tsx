@@ -42,45 +42,28 @@ const WeightBar: React.FC<{
         ></div>
       </div>
     );
-  if (width === undefined) width = '100%';
-  if (typeof width === 'number') {
-    return (
-      <Box display="flex" rGap={2} rWidth={width}>
-        {new Array(separator).fill(0).map((_, i) => {
-          const percentPerSeperator = 100 / separator;
-          const startPercent = percentPerSeperator * i;
-          const realPercent =
-            percent - startPercent > percentPerSeperator
-              ? 100
-              : ((percent - startPercent) / percentPerSeperator) * 100;
-          console.log(realPercent);
-          return (
-            <Box width={'100%'}>
-              <WeightBar percent={realPercent} height={height} />
-            </Box>
-          );
-        })}
-      </Box>
-    );
-  } else {
-    return (
-      <Box display="flex" rGap={2} width={width}>
-        {new Array(separator).fill(0).map((_, i) => {
-          const percentPerSeperator = 100 / separator;
-          const startPercent = percentPerSeperator * i;
-          const realPercent =
-            percent - startPercent > percentPerSeperator
-              ? 100
-              : ((percent - startPercent) / percentPerSeperator) * 100;
-          console.log(realPercent);
-          return (
-            <Box width={'100%'}>
-              <WeightBar percent={realPercent} height={height} />
-            </Box>
-          );
-        })}
-      </Box>
-    );
-  }
+  const resolvedWidth = width ?? '100%';
+  const containerProps =
+    typeof resolvedWidth === 'number'
+      ? { rWidth: resolvedWidth }
+      : { width: resolvedWidth };
+
+  return (
+    <Box display="flex" rGap={2} {...containerProps}>
+      {new Array(separator).fill(0).map((_, i) => {
+        const percentPerSeparator = 100 / separator;
+        const startPercent = percentPerSeparator * i;
+        const realPercent =
+          percent - startPercent > percentPerSeparator
+            ? 100
+            : ((percent - startPercent) / percentPerSeparator) * 100;
+        return (
+          <Box width="100%" key={`segment-${i}`}>
+            <WeightBar percent={realPercent} height={height} />
+          </Box>
+        );
+      })}
+    </Box>
+  );
 };
 export default WeightBar;

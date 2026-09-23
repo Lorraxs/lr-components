@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 export interface QueueMethods<T> {
   add: (item: T) => void;
@@ -11,17 +11,21 @@ export interface QueueMethods<T> {
 
 const useQueue = <T>(initialValue: T[] = []): QueueMethods<T> => {
   const [state, set] = useState(initialValue);
+  const stateRef = useRef(state);
+  stateRef.current = state;
+
+  const setQueue = (next: T[]) => {
+    stateRef.current = next;
+    set(next);
+  };
   return {
-    add: (value) => {
-      set((queue) => [...queue, value]);
+    add: value => {
+      setQueue([...stateRef.current, value]);
     },
     remove: () => {
-      let result;
-      set(([first, ...rest]) => {
-        result = first;
-        return rest;
-      });
-      return result;
+      const [first, ...rest] = stateRef.current;
+      setQueue(rest);
+      return first;
     },
     get values() {
       return state;

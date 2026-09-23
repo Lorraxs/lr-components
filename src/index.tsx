@@ -1,3 +1,5 @@
+import './icons/icons.css';
+
 export { default as Box } from './components/Box';
 export { default as Button } from './components/Button';
 export { default as Icon } from './components/Icon';
@@ -17,6 +19,10 @@ export { default as Td } from './components/Td';
 export { default as Th } from './components/Th';
 export { default as Thead } from './components/Thead';
 export { default as Tr } from './components/Tr';
+export { default as Lottie } from './components/Lottie';
+export { default as Loading } from './components/Loading';
+export { default as LRIcon } from './components/LRIcon';
+export { default as TextArea } from './components/TextArea';
 
 export { default as useExitListener } from './hooks/useExitListener';
 export { default as useKeyPress } from './hooks/useKeyPress';
@@ -27,4 +33,7 @@ export { default as useReponsiveProps } from './hooks/useReponsiveProps';
 export { default as useWindowSize } from './hooks/useWindowSize';
 export { default as useShow } from './hooks/useShow';
 export { default as useConfirmDialog } from './hooks/useConfirmDialog';
-export { default as useInputDialog } from './hooks/useInputDialog';
+export { default as useLottie } from './hooks/useLottie';
+export { default as useLottieInteractivity } from './hooks/useLottieInteractivity';
+
+//export icons css

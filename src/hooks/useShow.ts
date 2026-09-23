@@ -9,14 +9,16 @@ function useShow(props: UseShowProps) {
   const { name } = props;
   const [show, setShow] = useState(false);
   const toggle = () => {
-    setShow(!show);
-    if (!show) {
-      fetchNui('onOpen', name);
-    } else {
-      fetchNui('onClose', name);
-    }
+    setShow(prevShow => {
+      const nextShow = !prevShow;
+      fetchNui(nextShow ? 'onOpen' : 'onClose', name);
+      return nextShow;
+    });
   };
   useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
     if (show === true) {
       const KeyHandler = (e: KeyboardEvent) => {
         if (e.code === 'Escape') {

@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { BoxProps } from './Box';
 import styled from 'styled-components';
 import useReponsiveProps from '../hooks/useReponsiveProps';
+import { omitResponsiveProps } from '../utils/props';
 
 export type TextProps = {
   variant?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'p' | 'span';
@@ -23,14 +24,21 @@ const Text = React.forwardRef<any, TextProps>((props, ref) => {
     className,
     onClick,
     onBlur,
+    onMouseEnter,
+    onMouseLeave,
+    onMouseOver,
+    onContextMenu,
+    onWheel,
     variant,
     shadow,
     position,
     textShadow,
     fontFamily,
+    style,
     ...rest
   } = props;
   const ratioStyle = useReponsiveProps(props);
+  const restStyle = omitResponsiveProps(rest);
   const Element = useMemo(() => {
     switch (variant) {
       case 'h1':
@@ -56,20 +64,27 @@ const Text = React.forwardRef<any, TextProps>((props, ref) => {
       className={className}
       style={{
         fontFamily: fontFamily,
-        ...rest,
+        ...style,
+        ...restStyle,
         ...ratioStyle,
         position: position || 'relative',
         textShadow: textShadow,
       }}
       onClick={onClick}
       onBlur={onBlur}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+      onMouseOver={onMouseOver}
+      onContextMenu={onContextMenu}
+      onWheel={onWheel}
       ref={ref}
     >
       {shadow && (
         <Element
           style={{
             fontFamily: fontFamily,
-            ...rest,
+            ...style,
+            ...restStyle,
             ...ratioStyle,
             position: 'absolute',
             transform: 'translateX(3px) translateY(-3px)',

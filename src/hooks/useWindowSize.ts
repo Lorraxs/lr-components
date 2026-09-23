@@ -2,21 +2,37 @@ import { useState } from 'react';
 
 import { useEventListener, useIsomorphicLayoutEffect } from 'usehooks-ts';
 
-function useWindowSize() {
-  const [windowSize, setWindowSize] = useState({
+const getWindowSize = () => {
+  if (typeof window === 'undefined') {
+    return {
+      width: 0,
+      height: 0,
+      isWideScreen: false,
+      ratioWidth: 1,
+      ratioHeight: 1,
+    };
+  }
+
+  const isWideScreen = window.innerWidth / window.innerHeight > 1.8;
+
+  return {
     width: window.innerWidth,
     height: window.innerHeight,
-    ratioWidth: window.innerWidth / 1920,
-    ratioHeight: window.innerWidth / 1.778 / 1080,
-  });
+    isWideScreen,
+    ratioWidth: isWideScreen
+      ? window.innerHeight / 1080
+      : window.innerWidth / 1920,
+    ratioHeight: isWideScreen
+      ? window.innerWidth / 1.778 / 1080
+      : window.innerHeight / 1080,
+  };
+};
+
+function useWindowSize() {
+  const [windowSize, setWindowSize] = useState(getWindowSize);
 
   const handleSize = () => {
-    setWindowSize({
-      width: window.innerWidth,
-      height: window.innerHeight,
-      ratioWidth: window.innerWidth / 1920,
-      ratioHeight: window.innerWidth / 1.778 / 1080,
-    });
+    setWindowSize(getWindowSize());
   };
 
   useEventListener('resize', handleSize);

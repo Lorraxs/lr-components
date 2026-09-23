@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 import { CSS } from 'styled-components/dist/types';
 import useReponsiveProps, { WithRatioProps } from '../hooks/useReponsiveProps';
+import { omitResponsiveProps } from '../utils/props';
 
 const StyledInput = styled.input`
   width: 200px;
@@ -31,7 +32,8 @@ export type InputProps = {
   type?: 'text' | 'password' | 'number';
   value?: string | number;
   placeholder?: string;
-} & CSS.Properties &
+  style?: CSS.Properties;
+} & Partial<CSS.Properties> &
   WithRatioProps;
 
 function Input(props: InputProps) {
@@ -44,13 +46,16 @@ function Input(props: InputProps) {
     value = '',
     onChange,
     placeholder,
+    disabled = false,
+    style,
     ...rest
   } = props;
   const ratioStyle = useReponsiveProps(props);
+  const restStyle = omitResponsiveProps(rest);
   return (
     <StyledInput
       placeholder={placeholder}
-      style={{ ...ratioStyle, ...rest }}
+      style={{ ...style, ...ratioStyle, ...restStyle }}
       className={className}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
@@ -58,6 +63,7 @@ function Input(props: InputProps) {
       type={type}
       value={value}
       onChange={onChange}
+      disabled={disabled}
     />
   );
 }

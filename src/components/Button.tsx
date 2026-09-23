@@ -4,6 +4,7 @@ import { CSS } from 'styled-components/dist/types';
 
 import Text from './Text';
 import useReponsiveProps, { WithRatioProps } from '../hooks/useReponsiveProps';
+import { omitResponsiveProps } from '../utils/props';
 
 export type ButtonProps = {
   children?: React.ReactNode;
@@ -18,7 +19,9 @@ export type ButtonProps = {
   label?: string;
   icon?: React.ReactNode;
   iconAlign?: 'left' | 'right' | 'center';
-} & CSS.Properties &
+  style?: CSS.Properties;
+  hover?: CSS.Properties;
+} & Partial<CSS.Properties> &
   WithRatioProps;
 
 const StyledButton = styled.button`
@@ -51,27 +54,40 @@ function Button(props: ButtonProps) {
     iconAlign = 'left',
     icon,
     type,
+    style,
+    hover = {},
     ...rest
   } = props;
   const ratioStyle = useReponsiveProps(props);
+  const restStyle = omitResponsiveProps(rest);
+  const [isHover, setIsHover] = React.useState(false);
+  const baseStyle = {
+    ...style,
+    ...ratioStyle,
+    ...restStyle,
+    justifyContent: icon && label ? 'space-between' : 'center',
+  };
+
   return (
     <StyledButton
       className={className}
-      style={{
-        ...ratioStyle,
-        ...rest,
-        justifyContent: icon && label ? 'space-between' : 'center',
-      }}
+      style={isHover ? { ...baseStyle, ...hover } : baseStyle}
       onClick={onClick}
       onBlur={onBlur}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
+      onMouseEnter={e => {
+        setIsHover(true);
+        if (onMouseEnter) onMouseEnter(e);
+      }}
+      onMouseLeave={e => {
+        setIsHover(false);
+        if (onMouseLeave) onMouseLeave(e);
+      }}
       onMouseOver={onMouseOver}
       type={type}
     >
       {icon}
       {label && <Text color={color}>{label}</Text>}
-      <div></div>
+      <div>{children}</div>
     </StyledButton>
   );
 }
